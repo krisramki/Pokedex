@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Pokedex.Models;
+using Pokedex.ServiceAgent;
+using System.Threading.Tasks;
 using System.Web.Http.Description;
 
 namespace Pokedex.Controllers
@@ -9,27 +10,31 @@ namespace Pokedex.Controllers
     [Route("[controller]")]
     public class PokedexController : ControllerBase
     {
-        private readonly ILogger<PokedexController> _logger;
+        private readonly IPokemonServiceAgent pokemonServiceAgent;
 
-        public PokedexController(ILogger<PokedexController> logger)
+        public PokedexController(IPokemonServiceAgent pokemonServiceAgent)
         {
-            _logger = logger;
+            this.pokemonServiceAgent = pokemonServiceAgent;
         }
+
+
 
         [HttpGet("{pokemonName}")]
         [ResponseType(typeof(PokemonResponseDto))]
-        public IActionResult GetBasicPokemonDetails(string pokemonName)
+        public async Task<IActionResult> GetBasicPokemonDetails(string pokemonName)
         {
-            PokemonResponseDto response = new();
+            var response = await pokemonServiceAgent.GetPokemonDetailsAsync(pokemonName);
             return Ok(response);
         }
 
 
         [HttpGet("translated/{pokemonName}")]
         [ResponseType(typeof(PokemonResponseDto))]
-        public IActionResult GetPokemonWithTranslatedDescription(string pokemonName)
+        public async Task<IActionResult> GetPokemonWithTranslatedDescription(string pokemonName)
         {
-            PokemonResponseDto response = new();
+            var response = await pokemonServiceAgent.GetTranslatedPokemonDetailsAsync(pokemonName);
+
+
             return Ok(response);
         }
     }
