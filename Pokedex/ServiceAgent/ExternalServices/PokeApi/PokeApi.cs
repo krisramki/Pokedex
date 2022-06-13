@@ -16,10 +16,15 @@ namespace Pokedex.ExternalServices.PokeApi
             baseUrl = configuration.GetSection("ExternalServicesUrl").GetSection("PokeApiBaseUrl").Value;
         }
 
-        public async Task<PokemonSpeciesResponse> GetPokemonSpeciesAsync(string name)
+        public async Task<PokemonSpeciesResponse> GetPokemonSpeciesAsync(string pokemonName)
         {
             var httpClient = httpClientFactory.CreateClient();
-            var httpResponse = await httpClient.GetAsync($"{baseUrl}pokemon-species/{name}");
+            var httpResponse = await httpClient.GetAsync($"{baseUrl}pokemon-species/{pokemonName}");
+
+            if (httpResponse.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                return null;
+            }
 
             var result = await httpResponse.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<PokemonSpeciesResponse>(result);

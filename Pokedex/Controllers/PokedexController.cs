@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Pokedex.Models;
 using Pokedex.ServiceAgent;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using System.Web.Http.Description;
 
@@ -21,21 +22,21 @@ namespace Pokedex.Controllers
 
         [HttpGet("{pokemonName}")]
         [ResponseType(typeof(PokemonResponseDto))]
-        public async Task<IActionResult> GetBasicPokemonDetails(string pokemonName)
+        public async Task<IActionResult> GetBasicPokemonDetails([Required]string pokemonName)
         {
             var response = await pokemonServiceAgent.GetPokemonDetailsAsync(pokemonName);
-            return Ok(response);
+
+            return response.Success ? Ok(response.Result) : BadRequest();
         }
 
 
         [HttpGet("translated/{pokemonName}")]
         [ResponseType(typeof(PokemonResponseDto))]
-        public async Task<IActionResult> GetPokemonWithTranslatedDescription(string pokemonName)
+        public async Task<IActionResult> GetPokemonWithTranslatedDescription([Required]string pokemonName)
         {
             var response = await pokemonServiceAgent.GetTranslatedPokemonDetailsAsync(pokemonName);
 
-
-            return Ok(response);
+            return response.Success ? Ok(response.Result) : BadRequest();
         }
     }
 }

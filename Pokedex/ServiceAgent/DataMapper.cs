@@ -24,9 +24,9 @@ namespace Pokedex.ServiceAgent
             return response;
         }
 
-        private static string RemoveEscapeSequenceParameters(string text)
+        private static string RemoveEscapeSequenceParameters(string description)
         {
-            return Regex.Replace(text, @"\n|\f", " ");
+            return Regex.Replace(description, @"\n|\f", " ");
         }
     }
 }
